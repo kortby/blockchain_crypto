@@ -1,0 +1,59 @@
+# Go Binaries
+/bin/
+/out/
+/dist/
+
+# Go Build
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+
+# Go Land
+.idea/
+.vscode/
+
+# Go Mod
+/go/pkg/
+/go/bin/
+
+# Dependencies
+vendor/
+
+# Node Modules
+node_modules/
+
+# Protobuf
+*.pb.go
+*.pb.gw.go
+*.pb.cc
+*.pb.h
+
+# Logs and databases
+*.log
+*.sql
+*.sqlite
+*.db
+*.db3
+
+# Docker
+docker-compose.yml
+.dockerignore
+
+# Kubernetes
+*.yaml
+
+# Miscellaneous
+*.swp
+*.swo
+*.bak
+*.tmp
+*.backup
+*.save
+
+# OS Specific
+.DS_Store
+Thumbs.db

@@ -9,6 +9,7 @@ import (
 
 const (
 	privKeyLen = 64
+	signatureLen = 64
 	pubKeyLen = 32
 	seedLen = 32
 	addressLen = 20
@@ -44,6 +45,15 @@ func NewPrivateKeyFromSeed(seed []byte) *PrivateKey {
 	}
 	return &PrivateKey{
 		key: ed25519.NewKeyFromSeed(seed),
+	}
+}
+
+func PublicKeyFromBytes(b []byte) *PublicKey {
+	if len(b) != pubKeyLen {
+		panic("invalid public key len")
+	}
+	return &PublicKey{
+		key: ed25519.PublicKey(b),
 	}
 }
 
@@ -89,6 +99,15 @@ func (p *PublicKey) Bytes() []byte {
 
 func (s *Signature) Bytes() []byte {
 	return s.value
+}
+
+func SignatureFromBytes(b []byte) *Signature {
+	if len(b) != signatureLen {
+		panic("length of the bytes not equal")
+	}
+	return &Signature{
+		value: b,
+	}
 }
 
 func (s *Signature) Verify(pubKey *PublicKey, msg []byte) bool {
