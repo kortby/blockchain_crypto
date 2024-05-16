@@ -2,10 +2,7 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"log"
-	"net"
-	"time"
 
 	"github.com/kortby/blockchaincrypto/node"
 	"github.com/kortby/blockchaincrypto/proto"
@@ -14,23 +11,28 @@ import (
 )
 
 func main() {
-	node := node.NewNode()
-	opts := []grpc.ServerOption{}
-	grpcServer := grpc.NewServer(opts...)
-	ln, err := net.Listen("tcp", ":3000")
-	if err != nil {
-		log.Fatal(err)
-	}
-	proto.RegisterNodeServer(grpcServer, node)
-	fmt.Println("blockchain running on port: ", ":3000")
-	go func () {
-		for {
-			time.Sleep(time.Second * 3)
-			makeTransactions() 
-		}
-	}()
-	grpcServer.Serve(ln)
+	makeNode(":3000", []string{})
+	makeNode(":4000", []string{":3000"})
+	// go func () {
+	// 	for {
+	// 		time.Sleep(time.Second * 3)
+	// 		makeTransactions() 
+	// 	}
+	// }()
+	
+	// log.Fatal(node.Start(":3000"))
+	select {}
+}
 
+func makeNode(listenAddr string, bootstrapNodes []string) *node.Node {
+	n := node.NewNode()
+	go n.Start(listenAddr)
+	if len(bootstrapNodes) > 0 {
+		if err := n.BootstrapNetwork(bootstrapNodes); err != nil {
+			log.Fatal(err)
+		}
+	}
+	return n
 }
 
 func makeTransactions() {
@@ -43,6 +45,7 @@ func makeTransactions() {
 	version := &proto.Version{
 		Version: 32,
 		Height: 100,
+		ListenAddr: ":4000",
 	}
 	_, err = c.Handshake(context.TODO(), version)
 	if err != nil {
