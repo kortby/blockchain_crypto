@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"log"
+	"time"
 
 	"github.com/kortby/blockchaincrypto/node"
 	"github.com/kortby/blockchaincrypto/proto"
@@ -12,26 +13,18 @@ import (
 
 func main() {
 	makeNode(":3000", []string{})
+	time.Sleep(time.Second)
 	makeNode(":4000", []string{":3000"})
-	// go func () {
-	// 	for {
-	// 		time.Sleep(time.Second * 3)
-	// 		makeTransactions() 
-	// 	}
-	// }()
+	time.Sleep(time.Second * 4)
+	makeNode(":5000", []string{":4000"})
 	
-	// log.Fatal(node.Start(":3000"))
 	select {}
 }
 
 func makeNode(listenAddr string, bootstrapNodes []string) *node.Node {
 	n := node.NewNode()
-	go n.Start(listenAddr)
-	if len(bootstrapNodes) > 0 {
-		if err := n.BootstrapNetwork(bootstrapNodes); err != nil {
-			log.Fatal(err)
-		}
-	}
+	go n.Start(listenAddr, bootstrapNodes)
+	
 	return n
 }
 
